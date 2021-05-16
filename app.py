@@ -28,6 +28,10 @@ resource_fields = {
 }
 
 class User(Resource):
+    @app.route("/")
+    def index():
+        return "Users API"
+
     @marshal_with(resource_fields)
     def get(self):
         page = request.args.get('page', 1, type=int)
@@ -35,7 +39,7 @@ class User(Resource):
         result = UserModel.query.paginate(page, per_page, False)
         return result.items
 
-api.add_resource(User, '/','/users')
+api.add_resource(User, '/users')
 
 if __name__ == '__main__':
     app.run()
