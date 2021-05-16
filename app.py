@@ -3,7 +3,7 @@ from flask import Flask
 # https://github.com/flask-restful/flask-restful/pull/913
 import flask.scaffold
 flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
-from flask_restful import Resource, Api, fields, marshal_with
+from flask_restful import Resource, Api, fields, marshal_with, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -30,10 +30,12 @@ resource_fields = {
 class User(Resource):
     @marshal_with(resource_fields)
     def get(self):
-        result = UserModel.query.all()
-        return result
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+        result = UserModel.query.paginate(page, per_page, False)
+        return result.items
 
-api.add_resource(User, '/')
+api.add_resource(User, '/users')
 
 if __name__ == '__main__':
     app.run(debug=True)
