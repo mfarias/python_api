@@ -35,7 +35,7 @@ class User(Resource):
         result = UserModel.query.paginate(page, per_page, False)
         return result.items
 
-api.add_resource(User, '/users')
+api.add_resource(User, '/','/users')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
