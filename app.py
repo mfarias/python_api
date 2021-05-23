@@ -30,6 +30,21 @@ resource_fields = {
     'email': fields.String,
 }
 
+def applyFiltersAndPagination(query):
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 5, type=int)
+    name_ = request.args.get('name', type=str)
+    if name_:
+        query = query.filter_by(name=name_)
+    login_ = request.args.get('login', type=str)
+    if login_:
+        query = query.filter_by(login=login_)
+    email_ = request.args.get('email', type=str)
+    if email_:
+        query = query.filter_by(email=email_)
+    return query.paginate(page, per_page)
+
+
 class User(Resource):
     @app.route("/")
     def index():
@@ -50,9 +65,8 @@ class Users(Resource):
 
     @marshal_with(resource_fields)
     def get(self):
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 5, type=int)
-        result = UserModel.query.paginate(page, per_page, False)
+        query = UserModel.query
+        result = applyFiltersAndPagination(query)
         return result.items
 
 api.add_resource(Users, '/users')
