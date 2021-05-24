@@ -1,3 +1,4 @@
+from os import name
 from flask import Flask
 # import required to run on windows 10
 # https://github.com/flask-restful/flask-restful/pull/913
@@ -6,6 +7,7 @@ flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restful import Resource, Api, fields, marshal_with, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_caching import Cache
 
 app = Flask(__name__)
 api = Api(app)
@@ -13,6 +15,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/user_api'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT' : 30})
+cache.init_app(app)
 
 class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,14 +40,21 @@ def applyFiltersAndPagination(query):
     per_page = request.args.get('per_page', 5, type=int)
     name_ = request.args.get('name', type=str)
     if name_:
-        query = query.filter_by(name=name_)
+        query = query.filter(UserModel.name.contains(name_))
     login_ = request.args.get('login', type=str)
     if login_:
-        query = query.filter_by(login=login_)
+        query = query.filter(UserModel.login.contains(login_))
     email_ = request.args.get('email', type=str)
     if email_:
-        query = query.filter_by(email=email_)
+        query = query.filter(UserModel.email.contains(email_))
     return query.paginate(page, per_page)
+
+
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 5
+    response.cache_control.public = True
+    return response
 
 
 class User(Resource):
@@ -50,6 +62,7 @@ class User(Resource):
     def index():
         return "Users API"
 
+    @cache.cached()
     @marshal_with(resource_fields)
     def get(self, user_id):
         result = UserModel.query.filter_by(id=user_id).first()
@@ -63,6 +76,7 @@ api.add_resource(User, '/users/<user_id>')
 
 class Users(Resource):
 
+    @cache.cached(query_string=True)
     @marshal_with(resource_fields)
     def get(self):
         query = UserModel.query
