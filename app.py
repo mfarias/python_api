@@ -11,8 +11,7 @@ from flask_caching import Cache
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/user_api'
+app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
