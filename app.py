@@ -1,5 +1,5 @@
 from os import name
-from flask import Flask
+from flask import Flask, redirect
 # import required to run on windows 10
 # https://github.com/flask-restful/flask-restful/pull/913
 import flask.scaffold
@@ -46,7 +46,7 @@ def applyFiltersAndPagination(query):
     email_ = request.args.get('email', type=str)
     if email_:
         query = query.filter(UserModel.email.contains(email_))
-    return query.paginate(page, per_page)
+    return query.order_by(UserModel.id.asc()).paginate(page, per_page)
 
 
 @app.after_request
@@ -57,9 +57,9 @@ def add_header(response):
 
 
 class User(Resource):
-    @app.route("/")
-    def index():
-        return "Users API"
+    @app.route("/healthcheck")
+    def healthCheck():
+        return "Users API is running."
 
     @cache.cached()
     @marshal_with(resource_fields)
@@ -74,6 +74,9 @@ api.add_resource(User, '/users/<user_id>')
 
 
 class Users(Resource):
+    @app.route("/")
+    def index():
+         return redirect('/users')
 
     @cache.cached(query_string=True)
     @marshal_with(resource_fields)

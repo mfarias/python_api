@@ -1,9 +1,11 @@
 # List users API
 
 
-## Instructions
+## Getting started
 
-  Clone code and run `docker-compose up -d --build`. App should be available in port 5000 and database should be created with 1 million records.
+  Clone `https://github.com/mfarias/python_api.git`
+  Run `docker-compose up --build`. 
+  Access app `localhost:5000/`
   
   
 
@@ -12,7 +14,7 @@
 
   #### 1 - Health check:
 
-* **URL:** /
+* **URL:** /healthcheck
 
 * **Method:** `GET`
   
@@ -23,7 +25,7 @@
 * **Success Response:**
 
   * **Code:** 200 <br />
-  * **Content:** `Users API`
+  * **Content:** `Users API is running.`
   
 ----
 
@@ -33,7 +35,7 @@
 
 * **Method:** `GET`
   
-* **URL Params:** `id=[integer]` *(required)*
+* **URL Params:** `id=[integer]` *required*
 
 * **Data Params:** None
 
@@ -47,18 +49,18 @@
   
  #### 3 - List users:
 
-* **URL:** /users
+* **URL:** / or /users
 
 * **Method:** `GET`
   
 * **URL Params:** None
 
 * **Data Params**: 
-  * page: `[integer]` number of the page
-  * per_page: `[integer]` number of items per page
-  * name: `[string]` filter by name
-  * login: `[string]` filter by login
-  * email: `[string]` filter by email
+  * page: `[integer]` *page number. If not informed, the default value is 1.*
+  * per_page: `[integer]` *number of items per page. If not informed, the default value is 5.*
+  * name: `[string]` *filter by name*
+  * login: `[string]` *filter by login*
+  * email: `[string]` *filter by email*
 
 * **Success Response:**
 
