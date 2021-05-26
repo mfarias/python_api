@@ -4,7 +4,9 @@
 ## Getting started
 
   Clone `https://github.com/mfarias/python_api.git`
-  Run `docker-compose up --build`. 
+  
+  Run `docker-compose up --build`
+  
   Access app `localhost:5000/`
   
   
