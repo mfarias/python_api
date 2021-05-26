@@ -1,4 +1,4 @@
-# List users
+# List users API
 
 
 ## Instructions
@@ -6,7 +6,6 @@
   Clone code and run `docker-compose up -d --build`. App should be available in port 5000 and database should be created with 1 million records.
   
   
- ----
 
 
 ## Endpoints
@@ -26,6 +25,7 @@
   * **Code:** 200 <br />
   * **Content:** `Users API`
   
+----
 
 #### 2 - Get user by id:
 
@@ -42,7 +42,8 @@
   * **Code:** 200 <br />
   * **Content:** `{ id : 1, name : "User 1", login: "user1", email: "user1@example.com"  }`
     
-    
+----
+  
   
  #### 3 - List users:
 
