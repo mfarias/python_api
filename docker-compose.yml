@@ -2,6 +2,11 @@ version: '3.7'
 networks:
     internal:
         driver: bridge
+volumes: 
+    postgres-data:
+        driver: local
+    app:
+        driver: local
 
 services:
   api:
@@ -16,8 +21,7 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - ./app:/usr/src/app/app
-      - ./migrations:/usr/src/app/migrations
+      - app:/usr/src/app/app
     restart: always
 
   db:
@@ -33,4 +37,6 @@ services:
       - 5405:5432
     restart: always
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/csv:/var/lib/postgresql/csv

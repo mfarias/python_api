@@ -15,7 +15,7 @@ app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT' : 30})
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT' : 300})
 cache.init_app(app)
 
 class UserModel(db.Model):
@@ -51,7 +51,7 @@ def applyFiltersAndPagination(query):
 
 @app.after_request
 def add_header(response):
-    response.cache_control.max_age = 5
+    response.cache_control.max_age = 300
     response.cache_control.public = True
     return response
 
