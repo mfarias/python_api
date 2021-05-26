@@ -16,3 +16,6 @@ class Config:
     SQLALCHEMY_TABLE = 'migrations'
     SQLALCHEMY_DB_SCHEMA = 'public'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    CACHE_TYPE = 'SimpleCache'
+    CACHE_DEFAULT_TIMEOUT = 300

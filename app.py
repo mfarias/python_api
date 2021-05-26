@@ -14,9 +14,7 @@ api = Api(app)
 app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT' : 300})
-cache.init_app(app)
+cache = Cache(app)
 
 class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -76,7 +74,7 @@ api.add_resource(User, '/users/<user_id>')
 class Users(Resource):
     @app.route("/")
     def index():
-         return redirect('/users')
+        return redirect('/users')
 
     @cache.cached(query_string=True)
     @marshal_with(resource_fields)
